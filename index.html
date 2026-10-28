@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Videome</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <button id="btn1">Mute audio</button>
+    <button id="btn2">Stop video</button>
+    <video></video>
+    <script>
+        let btn1=document.getElementById("btn1");
+        let btn2=document.getElementById("btn2");
+        let video=document.querySelector("video");
+
+        let audioactive = false;
+        let videoactive = false;
+
+        let currentstream = null;
+        let audiotrack =null;
+        let videotrack= null;
+
+        btn1.addEventListener("click",()=>{
+            audioactive = !audioactive;
+            btn1.textContent = audioactive? "Mic: ON" : "Mic: OFF";
+            await hardware();
+        });
+        btn2.addEventListener("click",()=>{
+            videoactive = !videoactive;
+            btn1.textContent = videoactive? "Mic: ON" : "Mic: OFF";
+            await hardware();
+        });
+        async function hardware(){
+            if(audiotrack&&!audioactive){
+                audiotrack.stop();
+                audiotrack=null;
+            }
+            if(videotrack&&!videoactive){
+                videotrack.stop();
+                videotrack=null;
+                video.srcObject=null;
+            }
+            if(!audioactive&&!videoactive){
+                currentstream=null;
+                return;
+            }
+            const constraints ={audio: audioActive,video: videoActive};
+            try{
+                const stream =await navigator.mediaDevices.getUserMedia(constraints);
+                currentstream =stream;
+                if(audioactive){
+                    audioactive=stream.getAudioTracks()[0];
+                }
+                if(videoactive){
+                    videoactive=stream.getVideoTracks()[0];
+                    video.srcObject=stream;
+                    video.play();
+                }
+            }catch(error){
+                console.log("Error accessing hardware");
+            }
+        }
+    </script>
+</body>
+</html>
