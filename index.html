@@ -7,9 +7,28 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
+    <input type="text" id="inputt"></input>
+    <button id="join">join room</button>
     <button id="btn1">Mic: OFF</button>
     <button id="btn2">Video: OFF</button>
     <video></video>
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="index.js"></script>
+    <script>
+        //const socket=io();
+        let video1=document.querySelector("video");
+        let join=document.getElementById("join");
+        join.addEventListener("click",()=>{
+            let input=document.getElementById("inputt");
+            if(input.value){
+                console.log(input.value);
+                socket.emit('join room',input.value);
+            }
+        })
+        // video1.addEventListener('play',()=>{
+        //     socket.emit('video send',video);
+        // });
+    </script>>
 </body>
 </html>
